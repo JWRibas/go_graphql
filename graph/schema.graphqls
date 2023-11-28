@@ -1,0 +1,43 @@
+
+type Client {
+    cpf: String!
+    nome: String!
+    celular: String!
+}
+
+type Dados {
+    celular: String!
+    nucpf: String!
+    nomesegurado: String!
+    dtnascimento: String!
+    esp: String!
+    vlbeneficio: String!
+    idbancopagto: String!
+    idagenciabanco: String!
+    nucontacorrente: String!
+    idbancoempres: String!
+    idcontratoempres: String!
+    vlempres: String!
+    compinidesconto: String!
+    compfimdesconto: String!
+    quantparcelas: String!
+    vlparcela: String!
+    endereco: String!
+    bairro: String!
+    municipio: String!
+    uf: String!
+    cep: String!
+    CEL: String!
+    FONE1: String!
+    FONE2: String!
+    FONE3: String!
+    idade: String!
+    clients: [Client!]!
+}
+
+type Query {
+    client(cpf: String!): Client
+    dados(nucpf: String!): Dados
+}
+
+
