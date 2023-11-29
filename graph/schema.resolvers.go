@@ -7,10 +7,17 @@ package graph
 import (
 	"context"
 	"go_graphql/graph/model"
+	"log"
 )
 
 // Client is the resolver for the client field.
 func (r *queryResolver) Client(ctx context.Context, cpf string) (*model.Client, error) {
+	ginContext, err := GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("Gin context extracted successfully: ", ginContext)
+
 	client, err := r.ClientDB.GetClient(cpf)
 	if err != nil {
 		return nil, err
@@ -24,6 +31,12 @@ func (r *queryResolver) Client(ctx context.Context, cpf string) (*model.Client, 
 
 // Dados is the resolver for the dados field.
 func (r *queryResolver) Dados(ctx context.Context, nucpf string) (*model.Dados, error) {
+	ginContext, err := GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("Gin context extracted successfully: ", ginContext)
+
 	dados, err := r.ClientDB.GetDados(nucpf)
 	if err != nil {
 		return nil, err
