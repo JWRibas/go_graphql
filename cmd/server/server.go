@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -13,6 +14,7 @@ import (
 	"go_graphql/internal/database"
 	"log"
 	"os"
+	"time"
 )
 
 const defaultPort = "8080"
@@ -79,8 +81,20 @@ func main() {
 	}
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "User-Agent", "Referrer", "Host", "Token"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowAllOrigins:  false,
+		MaxAge:           12 * time.Hour,
+	}))
 	r.Use(GinContextToContextMiddleware())
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
-	r.Run()
+	err := r.Run()
+	if err != nil {
+		log.Fatal("Error running server: ", err)
+	}
 }
