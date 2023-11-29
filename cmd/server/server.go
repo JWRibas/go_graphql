@@ -58,6 +58,8 @@ func graphqlHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
 
 	return func(c *gin.Context) {
+		cookie, _ := c.Cookie("gin_cookie")
+		fmt.Printf("Cookie value: %s \n", cookie)
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
@@ -66,6 +68,8 @@ func playgroundHandler() gin.HandlerFunc {
 	h := playground.Handler("GraphQL", "/query")
 
 	return func(c *gin.Context) {
+		cookie, _ := c.Cookie("gin_cookie")
+		fmt.Printf("Cookie value: %s \n", cookie)
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
@@ -81,6 +85,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	//Cors
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
@@ -90,6 +95,15 @@ func main() {
 		AllowAllOrigins:  false,
 		MaxAge:           12 * time.Hour,
 	}))
+	//Cookie
+	r.GET("/cookie", func(c *gin.Context) {
+		cookie, err := c.Cookie("gin_cookie")
+		if err != nil {
+			cookie = "NotSet"
+			c.SetCookie("gin_cookie", "test", 3600, "/", "localhost", false, true)
+		}
+		fmt.Printf("Cookie value: %s \n", cookie)
+	})
 	r.Use(GinContextToContextMiddleware())
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
