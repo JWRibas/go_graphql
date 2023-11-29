@@ -2,8 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"log"
-	"time"
 )
 
 type ClientDB struct {
@@ -48,14 +46,9 @@ type Dados struct {
 }
 
 func (c *ClientDB) GetClient(cpf string) (*Client, error) {
-	start := time.Now()
-
 	row := c.DB.QueryRow("SELECT cpf, nome, celular FROM pbnew WHERE cpf = $1", cpf)
 	var client Client
 	err := row.Scan(&client.Cpf, &client.Nome, &client.Celular)
-
-	elapsed := time.Since(start)
-	log.Printf("Query took %s", elapsed)
 
 	if err != nil {
 		return nil, err
@@ -64,14 +57,9 @@ func (c *ClientDB) GetClient(cpf string) (*Client, error) {
 }
 
 func (c *ClientDB) GetDados(nucpf string) (*Dados, error) {
-	start := time.Now()
-
 	row := c.DB.QueryRow("SELECT nucpf, nomesegurado, esp FROM clientsnew WHERE nucpf = $1", nucpf)
 	var dados Dados
 	err := row.Scan(&dados.NuCpf, &dados.NomeSeg, &dados.Especie)
-
-	elapsed := time.Since(start)
-	log.Printf("Query took %s", elapsed)
 
 	if err != nil {
 		return nil, err
